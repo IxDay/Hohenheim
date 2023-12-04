@@ -4,6 +4,7 @@ const { Client } = require("@notionhq/client")
 const notion = new Client({ auth: process.env.NOTION_KEY })
 const utils = require('./utils')
 const catalog = require('./catalog')
+const github = require('./github')
 
 const pageId = process.env.NOTION_PAGE_ID
 // const title = request.body.dbName
@@ -22,11 +23,11 @@ block = {
   }
 }
 
-main = async () => {
+const main = async () => {
   try {
     // const response = await notion.blocks.children.list({block_id: pageId, page_size: 50});
     // const response = await notion.databases.retrieve({database_id: "57abb306-4c41-49cc-8e94-9762662d473e"})
-    const response = await notion.pages.retrieve({ page_id: pageId });
+    // const response = await notion.pages.retrieve({ page_id: pageId });
     // const response = await catalog.post(notion, pageId)
     // const response = await notion.blocks.children.append({
     //   block_id: pageId,
@@ -34,12 +35,14 @@ main = async () => {
     //     block
     //   ]
     // })
-    utils.pp(response)
+
+    const args = {owner: "kubernetes", repo: "kops", cb: (path, content) => console.log(path)}
+    const files = await github.docs(args)
+    // utils.pp(response)
     // console.log({ message: "success!", data: response })
   } catch (error) {
     console.log({ message: "error", error })
   }
-
 }
 
 main()
