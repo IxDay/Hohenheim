@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@notionhq/client": "^2.2.7",
+    "@tryfabric/martian": "github:IxDay/martian",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "octokit": "^3.1.2"

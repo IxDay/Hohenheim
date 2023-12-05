@@ -29,7 +29,7 @@ const cb = async (path, content) => {
       block_id: pageId,
       children: martian.markdownToBlocks(content)
   })
-  utils.pp(response)
+  // utils.pp(response)
 }
 
 const main = async () => {
