@@ -10,12 +10,18 @@ const repos = async (owner) => {
   utils.pp(response)
 }
 
-const docs = async ({owner, repo, cb = (path, content) => {}} = {}) => {
-  (await content({owner, repo})).forEach(async (file) => {
-    if (file.name.toUpperCase() === "README.MD") {
-      cb(file.path, atob((await content({owner, repo, path: file.name})).content))
-    }
-  })
+const docs = async ({owner, repo, docs = "docs", cb = async(path, content) => {}} = {}) => {
+  const readmeFilter = (file) => file.name.toUpperCase() === "README.MD"
+  const docsFilter = (file) => file.name.toUpperCase().endsWith(".MD")
+  const cbMap = async (file) => {
+    const response = await content({owner, repo, path: file.path})
+    await cb(file.path, atob(response.content))
+  }
+
+  const index = await content({owner, repo})
+  index.filter(readmeFilter).map(cbMap)
+  const dir = await content({owner, repo, path: docs})
+  dir.filter(docsFilter).map(cbMap)
 }
 
 module.exports = {

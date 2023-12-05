@@ -5,6 +5,7 @@ const notion = new Client({ auth: process.env.NOTION_KEY })
 const utils = require('./utils')
 const catalog = require('./catalog')
 const github = require('./github')
+const martian = require('@tryfabric/martian')
 
 const pageId = process.env.NOTION_PAGE_ID
 // const title = request.body.dbName
@@ -23,6 +24,14 @@ block = {
   }
 }
 
+const cb = async (path, content) => {
+  const response = await notion.blocks.children.append({
+      block_id: pageId,
+      children: martian.markdownToBlocks(content)
+  })
+  utils.pp(response)
+}
+
 const main = async () => {
   try {
     // const response = await notion.blocks.children.list({block_id: pageId, page_size: 50});
@@ -36,7 +45,7 @@ const main = async () => {
     //   ]
     // })
 
-    const args = {owner: "kubernetes", repo: "kops", cb: (path, content) => console.log(path)}
+    const args = {owner: "ixday", repo: "hohenheim", docs: "tests", cb}
     const files = await github.docs(args)
     // utils.pp(response)
     // console.log({ message: "success!", data: response })
